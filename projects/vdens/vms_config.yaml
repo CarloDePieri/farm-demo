@@ -1,0 +1,9 @@
+---
+
+permutations:
+  targets:
+    - "amd64"
+  platforms:
+    - "debian_vs"
+
+definitions: [] 

@@ -1,0 +1,42 @@
+- debug:
+    msg: ""
+
+      # BROKEN
+# pkg_mgr subset fact is required for use of 'package'
+# - name: gather min facts
+  # setup:
+    # gather_subset: 
+    # - '!all'
+
+# TODO handle the different platforms
+- block:
+
+    - name: Make sure the system is up to date.
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        state: latest
+        upgrade: yes
+
+    - name: Install test suite dependencies.
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        name:
+          - python3-pip
+          - python3-virtualenv
+        state: present
+
+    - name: Prepare the test root.
+      ansible.builtin.file:
+        state: directory
+        dest: "/test"
+
+    - name: Install all needed python dependencies into the test virtualenv.
+      ansible.builtin.pip:
+        name:
+          - pytest
+          - pexpect
+        virtualenv: /test/venv
+
+  become: yes

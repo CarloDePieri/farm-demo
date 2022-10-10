@@ -1,0 +1,20 @@
+
+
+- name: Sync the test folder.
+  copy:
+    src: tests/
+    dest: /test/
+  become: yes
+
+- name: Execute the test suite for group 1.
+  shell: |
+    cd /test/tests
+    ../venv/bin/pytest -m farm_group_1 --junitxml=../out.xml
+  failed_when: false
+  become: yes
+
+- name: Fetch the tests' results.
+  fetch:
+    src: /test/out.xml
+    dest: out/out.xml
+    flat: yes
