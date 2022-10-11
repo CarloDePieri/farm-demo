@@ -21,31 +21,31 @@ def test_that_vdens_works_as_expected():
     _ = bash("vde_plug null:// switch:///tmp/mysw")
 
     # Spawn the first vdens in another subshell
-    first_client = bash("vdens vde:///tmp/mysw")
+    ns_a = bash("vdens vde:///tmp/mysw")
 
-    # Configure the first client
-    first_client.expect("net_raw# ")
-    first_client.send("ip addr add 10.0.0.10/24 dev vde0\r")
-    first_client.expect("net_raw# ")
-    first_client.send("ip link set vde0 up\r")
-    first_client.expect("net_raw# ")
+    # Configure the first namespace
+    ns_a.expect("net_raw# ")
+    ns_a.send("ip addr add 10.0.0.10/24 dev vde0\r")
+    ns_a.expect("net_raw# ")
+    ns_a.send("ip link set vde0 up\r")
+    ns_a.expect("net_raw# ")
 
     # Spawn the second vdens
-    second_client = bash("vdens vde:///tmp/mysw")
+    ns_b = bash("vdens vde:///tmp/mysw")
 
-    # Configure the second client
-    second_client.expect("net_raw# ")
-    second_client.send("ip addr add 10.0.0.11/24 dev vde0\r")
-    second_client.expect("net_raw# ")
-    second_client.send("ip link set vde0 up\r")
-    second_client.expect("net_raw# ")
+    # Configure the second namespace
+    ns_b.expect("net_raw# ")
+    ns_b.send("ip addr add 10.0.0.11/24 dev vde0\r")
+    ns_b.expect("net_raw# ")
+    ns_b.send("ip link set vde0 up\r")
+    ns_b.expect("net_raw# ")
 
     # Send a ping from the second ns to the first
-    second_client.send("ping -c 1 10.0.0.10\n")
+    ns_b.send("ping -c 1 10.0.0.10\n")
 
 
     # Expect either the string '1 received' or a TIMEOUT
-    result_index = second_client.expect(
+    result_index = ns_b.expect(
             ["1 received", pexpect.TIMEOUT],
             timeout=3)
 

@@ -25,7 +25,7 @@ commands are run;
 - **Inventory**: A list of managed nodes that are logically organized. You create
 an inventory on the **control node** to describe host deployments to Ansible.
 
-![Image of Managed node controlled by the Control node](https://docs.ansible.com/ansible/latest/_images/ansible_basic.svg)
+![Image of Managed node controlled by the Control node](docs/images/ansible_basic.png)
 
 Ansible mainly relies on `yaml` files and [Jinja2 templating system](https://jinja.palletsprojects.com/en/3.1.x/templates/#template-designer-documentation).
 

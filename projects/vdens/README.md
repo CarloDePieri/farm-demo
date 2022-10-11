@@ -5,7 +5,7 @@ definitions of the needed vms are present.
 
 ### Setup
 
-All requirements can be found in the [test\_farm README](https://github.com/jjak0b/test_farm/blob/274053931fffdecac3744ffd4ab76ae6a5ec978e/README.md#requirements).
+All requirements can be found in the [test\_farm README](https://github.com/jjak0b/test_farm#requirements).
 
 ### Run
 
@@ -97,13 +97,55 @@ All dependencies for the test are installed in here. This includes:
 
 - upgrading the image packages;
 - installing the virtualsquare packages and projects with the `get_v2all` tool;
-- install all python dependencies for the test suite.
+- install all python dependencies for the test suite via the `setup_test_suite` role.
 
 ### [main.yaml](provision_phases/main.yaml)
 
-In here the pytest test suite is launched in the vm guest.
+In here the pytest test suite is launched in the vm guest, by passing to the
+`launch_test_suite` role the path of the test suite folder.
 
-## Pytest test ([tests](tests/) folder)
+## Pytest/Pexpect tests ([tests](tests/) folder)
 
-TODO
+[Pytest](https://docs.pytest.org/en/7.1.x/getting-started.html) is a python framework
+for writing test.
+[Pexpect](https://pexpect.readthedocs.io/en/stable/index.html) is a python library
+that allows to control other applications.
+Together, they are the main tools employed by the Farm Test roles.
 
+### pytest
+
+Pytest is really simple to [get started with](https://docs.pytest.org/en/7.1.x/getting-started.html#get-started)
+but can also scale to handle complex use cases if needed be.
+
+A pytest test is as simple as a python function whose name starts with `test_`,
+like [this dummy test](https://github.com/CarloDePieri/farm-demo/blob/15e454633aed3d8d61e1f7a3d94dc26564d31b09/projects/vdens/tests/test_all.py#L57),
+contained in a file whose name itself starts with `test_`.
+
+The main instrument to make assertions is `assert <boolean expression>`.
+A test *passes* if the function does not raise any exception or it *fails*
+otherwise. The aforementioned test *fails* since it asserts a falsy value (hence
+raising an `AssertionError`); this test is included to showcase how the test suite
+handles failures.
+
+The [main test](https://github.com/CarloDePieri/farm-demo/blob/15e454633aed3d8d61e1f7a3d94dc26564d31b09/projects/vdens/tests/test_all.py#L11)
+should *pass* instead, since it should return `None` if everything goes correctly
+and the last `if` block is not entered.
+
+The test suite will try to launch all provided tests, logging failures and
+successes alike. The output is a `junit2` standard file, which is a broadly used
+format. This allows to easly process and dispaly reports while maintaining access
+to all the important informations (eg. why a test failed, via it's stack trace).
+
+### pexpect
+
+The [main test](https://github.com/CarloDePieri/farm-demo/blob/15e454633aed3d8d61e1f7a3d94dc26564d31b09/projects/vdens/tests/test_all.py#L11)
+(which is thoroughly commented) simulates the interaction between two distinct
+terminals using `pexpect`.
+
+The principal pattern adopted by `pexpect` consist in calling `spaw(cmd)` to launch an
+interactive command and then alternate between
+`expect(['alternative1', 'alternative2', ...])` and `send("keys")` to respectively
+expect a specific response by the launched application or sending an input to it.
+
+The use of timeouts when expecting a response allows to model the test behaviour
+if no response is coming back at all.
