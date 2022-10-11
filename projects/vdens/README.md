@@ -5,34 +5,33 @@ definitions of the needed vms are present.
 
 ### Setup
 
-TODO
+All requirements can be found in the [test\_farm README](test_farm/README.md#requirements).
 
 ### Run
 
 Execute:
 
-```
+```shell
 ansible-playbook main.yaml -K
 ```
 
 This will go trough all provision and test phases and will result in two
 files in a `out` folder:
 
-  - `out.xml`: a `junit2` file containing all tests results; this includes
-  failed tests with their stack trace;
+- `out.xml`: a `junit2` file containing all tests results; this includes
+failed tests with their stack trace;
 
-  - `out.html`: included only for this demo, it's a possible way to visualize
-  the test data contained in the `out.xml` output file (produced by
-  [junit2html](https://pypi.org/project/junit2html/)).
+- `out.html`: included only for this demo, it's a possible way to visualize
+the test data contained in the `out.xml` output file (produced by
+[junit2html](https://pypi.org/project/junit2html/)).
 
 # Project structure
 
 This is a somewhat minimal example that includes one vm definition (a
-virtualsquare vm on a KVM x86\_64 machine) and a `pexpect` test that reproduce
+virtualsquare vm on a KVM x86\_64 machine) and a `pytest`/`pexpect` test that reproduce
 a [v2 wiki test](http://wiki.virtualsquare.org/#!tutorials/vde_ns.md#Scenario:_two_vdens_and_a_switch).
 
 ## Test lifecycle
-
 
 ![uhm](../../docs/images/test-lifecycle.png)
 
@@ -90,21 +89,21 @@ TODO
 
 ## Test phases
 
-TODO
+This specific test utilizes only the `init` and the `main` phases.
 
-### dependencies.yaml and init.yaml
+### [init.yaml](provision_phases/init.yaml)
 
-TODO
+All dependencies for the test are installed in here. This includes:
 
-### main.yaml
+- upgrading the image packages;
+- installing the virtualsquare packages and projects with the `get_v2all` tool;
+- install all python dependencies for the test suite.
 
-TODO
+### [main.yaml](provision_phases/main.yaml)
 
-### terminate.yaml
+In here the pytest test suite is launched in the vm guest.
 
-TODO
-
-## PExpect Test
+## Pytest test ([tests](tests/) folder)
 
 TODO
 
