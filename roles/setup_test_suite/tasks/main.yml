@@ -1,0 +1,42 @@
+---
+
+- block:
+
+    - name: Make sure the clock is in sync.
+      shell: /usr/sbin/hwclock --hctosys 
+
+    # TODO handle multiplatform
+    - name: Make sure the system is up to date.
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        state: latest
+        upgrade: yes
+
+    - name: Install test suite dependencies.
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        name:
+          - python3-pip
+          - python3-virtualenv
+        state: present
+
+    - name: Prepare the test root.
+      ansible.builtin.file:
+        state: directory
+        dest: "{{ guest_tests_root }}"
+        # TODO recover these from the inventory
+        owner: user
+        group: user
+
+  become: yes
+
+- name: Install all needed python dependencies into the test virtualenv.
+  ansible.builtin.pip:
+    name:
+      - pytest
+      - pexpect
+      - junit2html
+    virtualenv: "{{ guest_venv_folder }}"
+

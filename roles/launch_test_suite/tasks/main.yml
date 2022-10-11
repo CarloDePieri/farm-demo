@@ -1,0 +1,30 @@
+---
+
+- name: Sync the test folder.
+  copy:
+    src: "{{ tests_folder }}/"
+    dest: "{{ guest_tests_folder }}"
+
+# TODO handle groups
+- name: Execute the test suite.
+  shell: |
+    {{ guest_venv_bin_folder }}/pytest --junitxml=../out.xml
+  args:
+    chdir: "{{ guest_tests_folder }}"
+  failed_when: false
+
+- name: Prepare a simple html output
+  shell: |
+    {{ guest_venv_bin_folder }}/junit2html out.xml out.html
+  args:
+    chdir: "{{ guest_tests_root }}"
+
+- name: Fetch the tests' results.
+  fetch:
+    src: "{{ guest_tests_root }}/{{ item }}"
+    dest: "{{ tests_output_folder }}/{{ item }}"
+    flat: yes
+  with_items:
+    - out.xml
+    - out.html
+

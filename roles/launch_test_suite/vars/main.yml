@@ -1,0 +1,5 @@
+---
+guest_tests_root: /test
+guest_tests_folder: "{{ guest_tests_root }}/tests"
+guest_venv_folder: "{{ guest_tests_root }}/venv"
+guest_venv_bin_folder: "{{ guest_venv_folder }}/bin"
