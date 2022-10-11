@@ -2,7 +2,7 @@ This document aim is to give an overview of Ansible and of the libraries offered
 by the Test Farm.
 
 This is only usefull to begin to understand what's going on under the hood; for
-writing actual tests, take a look at the [readme in the provided example](projects/vdens/README.md).
+writing actual tests, take a look at the [readme in the provided example](projects/vdens/).
 
 #### Get the code
 
