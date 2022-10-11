@@ -69,23 +69,42 @@ all tests phases. This is accomplished by using several Test Deploy roles:
 
 ## Farm setup and VMs Definitions
 
-TODO
-
 ### setup\_hypervisor
 
-TODO definizione della rete
+This folder contains the hypervisor related tasks about its setup.
+
+- `networks`: contains the yaml network definitions (and eventually the XML
+libvirt template it uses) that the VM needs to be defined on the libvirt env
+during the setup.
 
 ### vms\_config.yaml
 
-TODO
+It's the YAML file containing the `VM configurations` matrix of `platforms` and
+`targets`. Storing this into a file it's a convenient way to store the `VM configurations`
+and importing them inside the playbook.
+
+- The property `permutations` specify the values of `platforms` and `targets` names
+used to create all possibile `(platform, target)` tuples.
+- The property `definitions` specify a list of `(platform, target)` or `(platform,
+target, template)` tuples;
 
 ### setup\_vm
 
-TODO 
+This folder contains the `platform` and `target` definitions files use by the
+`parse_vms_definitions` role to parse define the `VM definitions` object, and the
+`template` files used by the `kvm_provision` role to generate the VM according to
+it's specified template.
+If no template name is specified inside the `VM definition`, then the `default`
+template will be used.
+Each definition and template file is respectively placed inside the `platforms`,
+`targets` and `template` folder.
 
 ### group\_vars
 
-TODO 
+This folder is used by Ansible to assign variable to inventory groups. It can also
+define global variable (like the one in [all.yaml](group_vars/all.yaml)).
+This is usefull to [override or set](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence)
+ansible auth and connection variables based on the VM group.
 
 ## Test phases
 
