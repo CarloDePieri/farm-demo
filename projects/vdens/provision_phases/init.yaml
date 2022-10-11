@@ -1,15 +1,11 @@
-- debug:
-    msg: ""
+---
 
-      # BROKEN
-# pkg_mgr subset fact is required for use of 'package'
-# - name: gather min facts
-  # setup:
-    # gather_subset: 
-    # - '!all'
-
-# TODO handle the different platforms
+# Install vdens and vde_plug with the v2 script
+# NOTE: this is too broad, it should only install what's really needed
 - block:
+
+    - name: Make sure the clock is in sync.
+      shell: /usr/sbin/hwclock --hctosys 
 
     - name: Make sure the system is up to date.
       apt:
@@ -18,25 +14,17 @@
         state: latest
         upgrade: yes
 
-    - name: Install test suite dependencies.
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-        name:
-          - python3-pip
-          - python3-virtualenv
-        state: present
+    # TODO refactor this kludge
+    - name: Launch the virtualsquare install script.
+      command: /bin/bash -c "cd /root && export PATH=$PATH:/usr/sbin && DEBIAN_FRONTEND=noninteractive ./get_v2all > /tmp/out 2>&1"
 
-    - name: Prepare the test root.
-      ansible.builtin.file:
-        state: directory
-        dest: "/test"
-
-    - name: Install all needed python dependencies into the test virtualenv.
-      ansible.builtin.pip:
-        name:
-          - pytest
-          - pexpect
-        virtualenv: /test/venv
-
+    - name: Reboot the vm.
+      ansible.builtin.reboot:
+ 
   become: yes
+
+# prepare the test suite on the vm guest
+- include_role:
+    name: setup_test_suite
+
+# any additional test dependencies should be installed here
