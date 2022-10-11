@@ -5,7 +5,7 @@ definitions of the needed vms are present.
 
 ### Setup
 
-All requirements can be found in the [test\_farm README](test_farm/README.md#requirements).
+All requirements can be found in the [test\_farm README](https://github.com/jjak0b/test_farm/blob/274053931fffdecac3744ffd4ab76ae6a5ec978e/README.md#requirements).
 
 ### Run
 

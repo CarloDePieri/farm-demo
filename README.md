@@ -97,7 +97,7 @@ of the Hypervisor provisioning role.
 These `VM definitions` are parsed by the `parse_vms_definition` utility role and
 then used throughout the project by several roles.
 
-### Hypervisor provisioning ([kvm\_provision](test_farm/roles/kvm_provision))
+### Hypervisor provisioning ([kvm\_provision](https://github.com/jjak0b/test_farm/tree/274053931fffdecac3744ffd4ab76ae6a5ec978e/roles/kvm_provision))
 
 The hypervisor provisioning role deploy a list of virtual machines into the
 hypervisor host through their respective `VM definitions` objects.
@@ -117,7 +117,7 @@ defined by the user in the actual test.
 The use can futhermore define the network the vms will use by leveraging the
 `libvirt_network` role. This also includes DHCP entries for the vms.
 
-### Guest provisioning ([guest\_provision](test_farm/roles/guest_provision))
+### Guest provisioning ([guest\_provision](https://github.com/jjak0b/test_farm/tree/274053931fffdecac3744ffd4ab76ae6a5ec978e/roles/guest_provision))
 
 The Guest provisioning role distributes and runs tasks split into provisioning
 phases for each VM host.
