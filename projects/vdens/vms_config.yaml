@@ -6,4 +6,4 @@ permutations:
   platforms:
     - "debian_vs"
 
-definitions: [] 
+list: [] 

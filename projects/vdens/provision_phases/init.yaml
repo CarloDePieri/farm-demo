@@ -4,6 +4,15 @@
 # NOTE: this is too broad, it should only install what's really needed
 - block:
 
+    - name: Set authorized ssh key.
+      authorized_key:
+        user: "{{ item }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      with_items:
+        - user
+        - root
+
     - name: Make sure the clock is in sync.
       shell: /usr/sbin/hwclock --hctosys 
 

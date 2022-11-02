@@ -3,3 +3,6 @@ ansible_password: virtualsquare
 ansible_become_user: root
 ansible_become_password: virtualsquare
 ansible_become_method: su
+
+# we use usermode network forwading
+ansible_port: 8022

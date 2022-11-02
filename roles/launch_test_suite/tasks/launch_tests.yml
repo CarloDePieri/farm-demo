@@ -1,0 +1,59 @@
+---
+- name: Sync the test folder.
+  copy:
+    src: "{{ tests_folder }}/"
+    dest: "{{ guest_tests_folder }}"
+
+- name: Execute the test suite.
+  shell: |
+    {{ guest_venv_bin_folder }}/pytest {{ tests_filter }} --junitxml=../{{ output_xml }}
+  args:
+    chdir: "{{ guest_tests_folder }}"
+  failed_when: false
+
+- name: Prepare a simple html output.
+  shell: |
+    {{ guest_venv_bin_folder }}/junit2html {{ output_xml }} {{ output_html }}
+  args:
+    chdir: "{{ guest_tests_root }}"
+
+- name: Make sure the tests output folder is there.
+  file:
+    path: "{{ output_folder }}"
+    state: directory
+  delegate_to: "{{ kvm_host }}"
+
+- name: Fetch the tests' results.
+  fetch:
+    src: "{{ guest_tests_root }}/{{ item }}"
+    dest: "{{ output_folder }}/{{ item }}"
+    flat: yes
+  with_items:
+    - "{{ output_xml }}"
+    - "{{ output_html }}"
+
+- block:
+
+    - name: Restore Init Snapshot.
+      vars:
+        snapshot_name: "{{ snapshot_phase_name.init }}"
+      import_role: 
+        name: libvirt_snapshot
+        tasks_from: restore
+      when:
+        - snapshot_phase_name.init in snapshot_list 
+      # ignore any error like "snaphot unsupported" or "snapshot already exists / doesn't exists"
+      failed_when: false
+    
+    - name: Get snapshot result.
+      shell: /bin/true
+      register: restore_init_result
+      # is skipped when rc != 0 
+      when: &on_success 
+        - not( snapshot_restore_result is skipped )
+        - snapshot_restore_result.rc == 0
+      # is changed when rc == 0
+      changed_when: *on_success
+
+  delegate_to: "{{ kvm_host }}"
+  when: restore_init

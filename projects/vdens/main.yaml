@@ -39,25 +39,38 @@
 
     - block:
 
-      - name: gather min facts if definitions use them
+      - name: Gather min facts if definitions use them.
         setup:
           gather_subset:
             - '!all'
 
-      - name: "start KVM Provision role for '{{ vm.metadata.name }}'"
+      - name: "Start KVM Provision role for '{{ vm.metadata.name }}'."
         include_role:
           name: kvm_provision
 
       delegate_to: "{{ kvm_host }}"
       tags:
         - kvm_provision
+      when: false  # uncomment to skip vm provisioning
 
 
     - block:
 
-        - name: "Start VM provisioning of '{{ vm.metadata.name }}' "
-          include_role:
-            name: guest_provision
+      - name: "Start VM test cycle for '{{ vm.metadata.name }}'."
+        include_role: 
+          name: guest_provision
+        vars:
+          allowed_phases:
+            # - startup
+            - restore init
+            # - create init
+            # - restore clean
+            # - create clean
+            # - dependencies
+            # - init
+            - main
+            # - terminate
+            # - shutdown
 
       tags:
         - guest_provision

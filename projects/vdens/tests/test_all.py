@@ -1,6 +1,7 @@
 # test
 import pytest
 import pexpect
+from pathlib import Path
 
 
 def bash(cmd: str) -> pexpect.spawn:
@@ -8,6 +9,7 @@ def bash(cmd: str) -> pexpect.spawn:
     return pexpect.spawn("/bin/bash", ["-c", cmd])
 
 
+@pytest.mark.farm_group_1
 def test_that_vdens_works_as_expected():
     """Test that vdens works as expected.
 
@@ -54,5 +56,20 @@ def test_that_vdens_works_as_expected():
         pytest.fail("Ping timed out")
 
 
+@pytest.mark.farm_group_1
 def test_that_fails():
+    """TODO"""
+    # simulate a test that leaves the vm state dirty
+    dirty_file = Path("/home/user/dirty")
+    dirty_file.touch()
+    assert dirty_file.exists()
+    
+    # Make the test artificially fail
     assert False
+
+
+@pytest.mark.farm_group_2
+def test_that_groups_are_really_independent():
+    """TODO"""
+    dirty_file = Path("/home/user/dirty")
+    assert not dirty_file.exists()
